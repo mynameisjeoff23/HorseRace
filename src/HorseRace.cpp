@@ -8,6 +8,11 @@
 	to distinguish points that are at the edge, only add the points (black)
 	that are next to white points to the list of points which
 	will be used to find the line of best fit. 
+
+	Instead of checking if a horse is within collision distance of every boundary,
+	only check if within collision distance to points that are within a certain area.
+	This would require a map to be stored as as a 2d array, where each point 
+	is either a boundary or open space.
 */
 
 int main() {
