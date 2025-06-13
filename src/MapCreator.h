@@ -20,5 +20,9 @@ class HorseMap {
 public:
 	HorseMap(std::string& filename);
 private:
-	int width, height;
+	int m_width, m_height;
+	unsigned char* m_mapImage;
+
+	void openImage(std::string& filepath);
+
 };
