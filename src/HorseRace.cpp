@@ -15,9 +15,14 @@
 	is either a boundary or open space.
 */
 
+#include "MapCreator.h"
+#include <string>
+
 int main() {
 	//set up window and buttons
 	//load and process image
+	std::string filepath = "res/maps/testimage.png";
+	HorseMap map = HorseMap(filepath);
 	//run simulation
 	return 0;
 }
