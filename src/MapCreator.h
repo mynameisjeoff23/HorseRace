@@ -3,6 +3,21 @@
 #include <iostream>
 #include <vector>
 
+enum color {
+	BLACK = 0,
+	WHITE = 1
+};
+
+struct area {
+	int x, y; //first pixel to come up in search
+	int size; //number of pixels in area
+};
+
+struct point {
+	int x, y;
+	color color;
+};
+
 struct line {
 
 	int x, y;
@@ -16,13 +31,20 @@ struct boundary {
 	bool isSpace;
 };
 
+
 class HorseMap {
 public:
 	HorseMap(std::string& filename);
 private:
-	int m_width, m_height;
+	int m_width, m_height, m_areaSize;
 	unsigned char* m_mapImage;
+	std::vector<std::vector<point>> m_basicMap;
+	std::vector<area> m_areas;
 
 	void openImage(std::string& filepath);
+	void stringToVector();
+	void findLargestArea();
+	void exploreArea(point &start);
+	void fillNextPixels(point &pixel);
 
 };
