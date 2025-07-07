@@ -5,7 +5,8 @@
 
 enum color {
 	BLACK = 0,
-	WHITE = 1
+	WHITE = 1, 
+	GRAY = 2
 };
 
 struct area {
@@ -37,14 +38,16 @@ public:
 	HorseMap(std::string& filename);
 private:
 	int m_width, m_height, m_areaSize;
+	bool select = false;
 	unsigned char* m_mapImage;
 	std::vector<std::vector<point>> m_basicMap;
 	std::vector<area> m_areas;
+	point m_largestAreaStart;
 
 	void openImage(std::string& filepath);
 	void stringToVector();
 	void findLargestArea();
 	void exploreArea(point &start);
-	void fillNextPixels(point &pixel);
-
+	void resetMapVector();
+	void selectArea(point& start);
 };
