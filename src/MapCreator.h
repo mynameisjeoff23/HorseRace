@@ -2,6 +2,8 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <queue>
+#include <array>
 
 enum color {
 	BLACK = 0,
@@ -37,17 +39,18 @@ class HorseMap {
 public:
 	HorseMap(std::string& filename);
 private:
-	int m_width, m_height, m_areaSize;
+	int m_width, m_height;
 	bool select = false;
 	unsigned char* m_mapImage;
 	std::vector<std::vector<point>> m_basicMap;
 	std::vector<area> m_areas;
+	std::queue<std::array<int, 2>> m_floodFillQueue;
 	point m_largestAreaStart;
 
 	void openImage(std::string& filepath);
 	void stringToVector();
 	void findLargestArea();
-	void exploreArea(point &start);
+	int exploreArea(point start);
 	void resetMapVector();
-	void selectArea(point& start);
+	void selectLargestArea();
 };
