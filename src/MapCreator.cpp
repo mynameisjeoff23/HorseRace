@@ -32,7 +32,6 @@ static void outputMap(std::vector<std::vector<point>>& map, int width, int heigh
 
 HorseMap::HorseMap(std::string& filepath) {
 
-	//possible TODO: 
 	//open image
 	openImage(filepath);
 
@@ -42,13 +41,13 @@ HorseMap::HorseMap(std::string& filepath) {
 	stringToVector(); // convert image to vector of points
 	outputMap(m_basicMap, m_width, m_height); // output map to file
 	findLargestArea(); // find largest area in the map
-	stringToVector(); // reset map vector to original state
 	std::cout << "Number of areas found: " << m_areas.size() << std::endl;
 	std::cin.get(); // wait for user input to continue
 	selectLargestArea(); // select the largest area in the map
 	outputMap(m_basicMap, m_width, m_height); // output map to file again
 	
 	// indentify boundaries of largest section
+
 	}
 
 void HorseMap::openImage(std::string& filepath) {
@@ -80,7 +79,6 @@ void HorseMap::stringToVector() {
 }
 
 void HorseMap::findLargestArea() {
-
 	m_areas.reserve(10); //reserve space for 10 areas, can be changed later
 	int areaSize;
 	for (auto& row : m_basicMap) {
@@ -108,9 +106,9 @@ void HorseMap::findLargestArea() {
 }
 
 
-int HorseMap::exploreArea(point pixel) {
-	//TODO: causes stack overflow
-	int areaSize{ 0 };
+int HorseMap::exploreArea(point pixel, color countThisColor) {
+
+	int count{ 0 };
 	m_floodFillQueue.push({ pixel.x, pixel.y });
 
 	int x, y;
@@ -125,11 +123,19 @@ int HorseMap::exploreArea(point pixel) {
 
 		pixel = m_basicMap[y][x]; //get the pixel from the map
 
-		if (pixel.color != color::WHITE) //if the pixel is not white, skip it
+		if (countThisColor == color::BLACK && pixel.color == color::BLACK) {
+			++count;
+			continue;
+		}
+
+		if (pixel.color != color::WHITE) 
 			continue;
 
-		pixel.color = select ? color::GRAY : color::BLACK; //set pixel color based on selection
-		++areaSize; //increment area size
+		pixel.color = color::GRAY; //mark the pixel as visited
+
+		if (countThisColor == color::WHITE) {
+			++count;
+		}
 
 		m_basicMap[y][x].color = pixel.color; //update the pixel in the map
 
@@ -140,18 +146,21 @@ int HorseMap::exploreArea(point pixel) {
 		m_floodFillQueue.push({ x, y + 1 }); //down
 
 	}
-	return areaSize;
-}
 
-void HorseMap::resetMapVector() {
-
-	stringToVector();
+	return count;
 }
 
 void HorseMap::selectLargestArea() {
 
-	select = true; //set select to true so that we can explore the area
-	exploreArea(m_largestAreaStart); //explore the area starting from the largest area start point
-	select = false; //reset select to false so that we don't select accidentally
+	stringToVector(); // reset map vector to original state
+	//TODO: at this point, what it counts are bounding edges, not bounding pixels
+	int numberBoundaries = countBoundaries(m_largestAreaStart); //count the boundaries of the largest area
+	std::cout << "Number of boundaries: " << numberBoundaries << std::endl;
 
+}
+
+int HorseMap::countBoundaries(point& start) {
+
+	int count = exploreArea(start, color::BLACK); 
+	return count;
 }

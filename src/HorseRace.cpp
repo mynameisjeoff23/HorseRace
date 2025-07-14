@@ -13,6 +13,8 @@
 	only check if within collision distance to points that are within a certain area.
 	This would require a map to be stored as as a 2d array, where each point 
 	is either a boundary or open space.
+
+	First try the approach of an array of boundaries. If performance is bad, try 2d array approach. 
 */
 
 #include "MapCreator.h"
