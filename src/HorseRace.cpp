@@ -23,7 +23,7 @@
 int main() {
 	//set up window and buttons
 	//load and process image
-	std::string filepath = "res/maps/testimage.png";
+	std::string filepath = "res/maps/beutifulimage.png";
 	HorseMap map = HorseMap(filepath);
 	//run simulation
 	return 0;

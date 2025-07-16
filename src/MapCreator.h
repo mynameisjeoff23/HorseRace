@@ -8,7 +8,8 @@
 enum color {
 	BLACK = 0,
 	WHITE = 1, 
-	GRAY = 2
+	GRAY = 2, // temporary
+	RED = 3 // temporary
 };
 
 struct area {

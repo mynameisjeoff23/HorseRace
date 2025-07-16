@@ -15,11 +15,13 @@ static void outputMap(std::vector<std::vector<point>>& map, int width, int heigh
 					stream << ':';
 				}
 				else if (map[y][x].color == color::BLACK) {
-					stream << ' ';
+					stream << '.';
 				}
 				else if (map[y][x].color == color::GRAY) {
-					stream << 'X'; 
+					stream << 'X';
 				}
+				else if (map[y][x].color == color::RED)
+					stream << "@";
 				else {
 					throw std::runtime_error("???");
 				}
@@ -125,6 +127,9 @@ int HorseMap::exploreArea(point pixel, color countThisColor) {
 
 		if (countThisColor == color::BLACK && pixel.color == color::BLACK) {
 			++count;
+			//mark the pixel as visited
+			//should make so pixels are counted instead of edges			
+			m_basicMap[y][x].color = color::RED;									
 			continue;
 		}
 
