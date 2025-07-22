@@ -1,11 +1,6 @@
 #include "MapCreator.h"
-#include "vendor/stb_image/stb_image.h"
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <stdexcept>
 
-//TODO: temporary
+// TODO: temporary
 static void outputMap(std::vector<std::vector<point>>& map, int width, int height) {
 	std::ofstream stream("ImageProcessingOutput/output.txt", std::ios::out);
 	if (stream) {
@@ -34,21 +29,23 @@ static void outputMap(std::vector<std::vector<point>>& map, int width, int heigh
 
 HorseMap::HorseMap(std::string& filepath) {
 
-	//open image
+	// open image
 	openImage(filepath);
 
-	//reserve space for image sized map
+	// reserve space for image sized map
 	m_basicMap = std::vector<std::vector<point>> (m_height, std::vector<point>(m_width));
 	
 	stringToVector(); // convert image to vector of points
-	outputMap(m_basicMap, m_width, m_height); // output map to file
+	// outputMap(m_basicMap, m_width, m_height); // output map to file
 	findLargestArea(); // find largest area in the map
 	std::cout << "Number of areas found: " << m_areas.size() << std::endl;
 	std::cin.get(); // wait for user input to continue
+	
+	// indentify boundaries of largest section
 	selectLargestArea(); // select the largest area in the map
 	outputMap(m_basicMap, m_width, m_height); // output map to file again
 	
-	// indentify boundaries of largest section
+	m_boundaryMap = std::vector<std::vector<boundary>>(m_height, std::vector<boundary>(m_width));
 
 	}
 
@@ -57,7 +54,7 @@ void HorseMap::openImage(std::string& filepath) {
 	int channels;
 	m_mapImage = stbi_load(filepath.c_str(), &m_width, &m_height, &channels, 1);
 
-	//TODO: none of this is really necessary |
+	// TODO: none of this is really necessary |
 	//										 V
 	std::cout << "Channels: " << channels << std::endl;
 	std::cout << "Dimensions: " << m_width << " x " << m_height
@@ -69,27 +66,24 @@ void HorseMap::stringToVector() {
 
 	for (int y = 0; y < m_height; ++y) {
 		for (int x = 0; x < m_width; ++x) {
-			if (m_mapImage[m_width * y + x] == 0) {
 
-				m_basicMap[y][x] = { x, y, color::BLACK }; //black pixel
-			}
-			else {
-				m_basicMap[y][x] = { x, y, color::WHITE }; //white pixel
-			}
+			if (m_mapImage[m_width * y + x] == 0) 
+				m_basicMap[y][x] = { x, y, color::BLACK }; // black pixel
+			else
+				m_basicMap[y][x] = { x, y, color::WHITE }; // white pixel
 		}
 	}
 }
 
 void HorseMap::findLargestArea() {
-	m_areas.reserve(10); //reserve space for 10 areas, can be changed later
+	m_areas.reserve(10); // reserve space for 10 areas, can be changed later
 	int areaSize;
 	for (auto& row : m_basicMap) {
 		for (auto& pixel : row) {
 			if (pixel.color == color::WHITE) {
-				areaSize = exploreArea(pixel); //explore the area starting from this pixel
-				if (areaSize > 0) { //if we found an area
+				areaSize = exploreArea(pixel); // explore the area starting from this pixel
+				if (areaSize > 0) // if we found an area
 					m_areas.push_back({ pixel.x, pixel.y, areaSize });
-				}
 			}
 		}
 	}
@@ -121,34 +115,36 @@ int HorseMap::exploreArea(point pixel, color countThisColor) {
 		m_floodFillQueue.pop();
 
 		if (x < 0 || x >= m_width || y < 0 || y >= m_height)
-			continue; //out of bounds
+			continue; // out of bounds
 
-		pixel = m_basicMap[y][x]; //get the pixel from the map
+		pixel = m_basicMap[y][x]; // get the pixel from the map
 
 		if (countThisColor == color::BLACK && pixel.color == color::BLACK) {
 			++count;
-			//mark the pixel as visited
-			//should make so pixels are counted instead of edges			
-			m_basicMap[y][x].color = color::RED;									
+
+			// mark the pixel as visited
+			// should make so pixels are counted instead of edges			
+			m_basicMap[y][x].color = color::RED;	
+
 			continue;
 		}
 
 		if (pixel.color != color::WHITE) 
 			continue;
 
-		pixel.color = color::GRAY; //mark the pixel as visited
+		pixel.color = color::GRAY; // mark the pixel as visited
 
-		if (countThisColor == color::WHITE) {
+		if (countThisColor == color::WHITE) 
 			++count;
-		}
+		
 
-		m_basicMap[y][x].color = pixel.color; //update the pixel in the map
+		m_basicMap[y][x].color = pixel.color; // update the pixel in the map
 
-		//push the neighboring pixels to the queue
-		m_floodFillQueue.push({ x - 1, y }); //left
-		m_floodFillQueue.push({ x + 1, y }); //right
-		m_floodFillQueue.push({ x, y - 1 }); //up
-		m_floodFillQueue.push({ x, y + 1 }); //down
+		// push the neighboring pixels to the queue
+		m_floodFillQueue.push({ x - 1, y }); // left
+		m_floodFillQueue.push({ x + 1, y }); // right
+		m_floodFillQueue.push({ x, y - 1 }); // up
+		m_floodFillQueue.push({ x, y + 1 }); // down
 
 	}
 
@@ -158,8 +154,7 @@ int HorseMap::exploreArea(point pixel, color countThisColor) {
 void HorseMap::selectLargestArea() {
 
 	stringToVector(); // reset map vector to original state
-	//TODO: at this point, what it counts are bounding edges, not bounding pixels
-	int numberBoundaries = countBoundaries(m_largestAreaStart); //count the boundaries of the largest area
+	int numberBoundaries = countBoundaries(m_largestAreaStart); // count the boundaries of the largest area
 	std::cout << "Number of boundaries: " << numberBoundaries << std::endl;
 
 }
@@ -168,4 +163,93 @@ int HorseMap::countBoundaries(point& start) {
 
 	int count = exploreArea(start, color::BLACK); 
 	return count;
+}
+
+void HorseMap::makeBoundaryMap() {
+
+	for (auto& row : m_basicMap) {
+		for (auto& pixel : row) {
+			if (pixel.color == color::RED) 
+				m_boundaryMap[pixel.y][pixel.x] = processNearbyBoundaries(pixel); //set as boundary
+			else 
+				// TOOD: remove bool to save data if you really want to
+				m_boundaryMap[pixel.y][pixel.x] = { pixel.x, pixel.y, 0.0f, false }; //set non-boundary
+			
+		}
+	}
+}
+
+boundary HorseMap::processNearbyBoundaries(point& start) {
+	//TODO: shrink function size
+	boundary processedBoundary;
+	LOBFLine lobf;
+	static std::vector<LOBFPoint> points;
+	points.clear();
+
+	// scan for other boundaries nearby
+	for (int x = -3; x < 4; ++x) {
+		for (int y = -3; y < 4; ++y) {
+
+			int newX = start.x + x;
+			int newY = start.y + y;
+
+			// check if the new pixel is within bounds
+			if (newX < 0 || newX >= m_width || newY < 0 || newY >= m_height)
+				continue; //out of bounds
+
+			if (m_basicMap[newY][newX].color == color::RED) 
+				points.push_back(LOBFPoint(newX, newY)); // add the boundary point to the list
+			
+		}
+	}
+
+	// calculate the line of best fit for the points
+	lobf = CalculateLineOfBestFit(points); 
+
+	// calculate the normal vector
+	double vectorX = lobf.slope;
+	double vectorY = -1;
+
+	// normalize normal vector;
+	double magV = std::sqrt(vectorX * vectorX + vectorY * vectorY);
+	if (magV != 0) {
+		vectorX /= magV;
+		vectorY /= magV;
+	}
+
+	// check if vector lands inside the area
+	int checkX = start.x + (int)std::round(vectorX);
+	int checkY = start.y + (int)std::round(vectorY);
+
+	if (checkX < 0 || checkX >= m_width || checkY < 0 || checkY >= m_height) {
+		std::cout << "Normal vector out of bounds: <" \
+			<< checkX << ", " << checkY << ">" << std::endl;
+		// flip the vector if out of bounds
+		vectorX *= -1;
+		vectorY *= -1;
+
+		// flip check coords to other side
+		checkX = start.x + (int)std::round(vectorX);
+		checkY = start.y + (int)std::round(vectorY);
+	}
+
+	// if color is white, flip vector
+	// if color is gray, vector is correct
+	if (m_basicMap[checkY][checkX].color == color::WHITE) {
+		vectorX *= -1;
+		vectorY *= -1;
+	}
+	else if (m_basicMap[checkY][checkX].color == color::GRAY) {
+		// do nothing, vector is correct
+	}
+	else {
+		std::cout << "tiny little bug at (" << checkX << ", " << checkY << "): "
+			<< m_basicMap[checkY][checkX].color << std::endl;
+	}
+
+	float normal = std::atan2(vectorY, vectorX); // calculate the angle of the normal vector
+
+	// create the boundary object
+	processedBoundary = { start.x, start.y, normal, true };
+	return processedBoundary;
 }

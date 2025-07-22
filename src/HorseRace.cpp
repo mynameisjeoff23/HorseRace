@@ -13,8 +13,6 @@
 	only check if within collision distance to points that are within a certain area.
 	This would require a map to be stored as as a 2d array, where each point 
 	is either a boundary or open space.
-
-	First try the approach of an array of boundaries. If performance is bad, try 2d array approach. 
 */
 
 #include "MapCreator.h"
@@ -23,7 +21,7 @@
 int main() {
 	//set up window and buttons
 	//load and process image
-	std::string filepath = "res/maps/beutifulimage.png";
+	std::string filepath = "res/maps/testimage.png";
 	HorseMap map = HorseMap(filepath);
 	//run simulation
 	return 0;

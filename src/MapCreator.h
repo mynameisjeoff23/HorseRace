@@ -4,6 +4,11 @@
 #include <vector>
 #include <queue>
 #include <array>
+#include "vendor/lobf/lobf.h"
+#include "vendor/stb_image/stb_image.h"
+#include <fstream>
+#include <stdexcept>
+
 
 enum color {
 	BLACK = 0,
@@ -22,17 +27,11 @@ struct point {
 	color color;
 };
 
-struct line {
-
-	int x, y;
-	float slope; 
-};
-
 struct boundary {
 
 	int x, y;
 	float normal; //normal is angle in radians
-	//bool isSpace; //use only with 2d array approach
+	bool isBoundary; //use only with 2d array approach
 };
 
 
@@ -43,8 +42,9 @@ private:
 	int m_width, m_height;
 	unsigned char* m_mapImage;
 	std::vector<std::vector<point>> m_basicMap;
+	std::vector<std::vector<boundary>> m_boundaryMap;
 	std::vector<area> m_areas;
-	std::vector<boundary> m_boundaries;
+	//std::vector<boundary> m_boundaries;
 	std::queue<std::array<int, 2>> m_floodFillQueue;
 	point m_largestAreaStart;
 
@@ -95,4 +95,7 @@ private:
 	* This function uses the flood fill algorithm in exploreArea() to count the number 
 	*/
 	int countBoundaries(point& start);
+
+	void makeBoundaryMap();
+	boundary processNearbyBoundaries(point& start);
 };
