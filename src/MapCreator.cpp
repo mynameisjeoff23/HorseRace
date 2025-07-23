@@ -35,7 +35,8 @@ HorseMap::HorseMap(std::string& filepath) {
 	// reserve space for image sized map
 	m_basicMap = std::vector<std::vector<point>> (m_height, std::vector<point>(m_width));
 	
-	stringToVector(); // convert image to vector of points
+	stringToVector();
+	darkenMapBorders();
 	// outputMap(m_basicMap, m_width, m_height); // output map to file
 	findLargestArea(); // find largest area in the map
 	std::cout << "Number of areas found: " << m_areas.size() << std::endl;
@@ -72,6 +73,20 @@ void HorseMap::stringToVector() {
 			else
 				m_basicMap[y][x] = { x, y, color::WHITE }; // white pixel
 		}
+	}
+}
+
+void HorseMap::darkenMapBorders() {
+	for (int i = 0; i < m_width; ++i) {
+		int y = m_height - 1;
+		m_basicMap[0][i].color = color::BLACK; // top border
+		m_basicMap[y][i].color = color::BLACK; // bottom border
+	}
+
+	for (int i = 0; i < m_height; ++i) {
+		int x = m_width - 1;
+		m_basicMap[i][0].color = color::BLACK; // left border
+		m_basicMap[i][x].color = color::BLACK; // right border
 	}
 }
 

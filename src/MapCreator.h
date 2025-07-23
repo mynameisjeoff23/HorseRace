@@ -50,6 +50,17 @@ private:
 
 	void openImage(std::string& filepath);
 	void stringToVector();
+    /**
+     * @brief Darkens the borders of the map image.
+     *
+     * This function modifies the map by setting the outermost pixels (borders) to black.
+     * It iterates over the edges of m_basicMap and sets their color to color::BLACK.
+     * This is used to ensure that the map boundaries are clearly defined and
+     * to prevent error with boundary detection.
+     *
+     * The function does not return a value and directly updates m_basicMap in place.
+     */
+    void darkenMapBorders();
 	/**
 	 * @brief Finds the largest contiguous white area in the map.
 	 *
@@ -97,5 +108,33 @@ private:
 	int countBoundaries(point& start);
 
 	void makeBoundaryMap();
+	//TODO: change gray to not be a temporary color anymore, and update docs
+    /**
+     * @brief Generates the boundary map for the current map.
+     *
+     * This function analyzes the m_basicMap to identify boundary pixels and populates m_boundaryMap accordingly.
+     * A boundary pixel is typically defined as a pixel that is adjacent to a pixel of a different color (e.g., a white pixel next to a black pixel).
+     * The function assumes that m_basicMap has already been initialized and contains valid color information for each pixel.
+     * It also assumes that the map borders have been darkened (via darkenMapBorders()) to prevent boundary detection errors at the edges.
+     * The function does not return a value and directly updates m_boundaryMap in place.
+     *
+     * Assumptions:
+     * - m_basicMap is a 2D vector of points representing the map, and is fully populated.
+     * - The map borders are already set to color::BLACK to ensure correct boundary detection.
+     * - m_width and m_height accurately reflect the dimensions of m_basicMap.
+     * - m_boundaryMap is either empty or will be overwritten.
+     */
+    void makeBoundaryMap();
+
+	/**
+	 * @brief Processes nearby boundaries to determine the boundary characteristics at a given point.
+	 *
+	 * This function examines the surrounding pixels of the specified start point to identify nearby boundaries.
+	 * It calculates a line of best fit for the identified boundary points and determines a normal vector.
+	 * The resulting boundary characteristics are returned as a boundary object.
+	 *
+	 * @param start The starting point from which to process nearby boundaries.
+	 * @return A boundary object containing the processed boundary information.
+	 */
 	boundary processNearbyBoundaries(point& start);
 };

@@ -1,5 +1,7 @@
 /*ideas:
 
+	Memory and performance optimization are not a concern at the moment
+
 	use line of best fit algorithm from
 	https://github.com/antkowiak/LineOfBestFit/blob/master/lobf.cpp
 	to find the line of best fit from the immediate points in like a 2 radius
