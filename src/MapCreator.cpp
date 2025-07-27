@@ -198,7 +198,7 @@ boundary HorseMap::processNearbyBoundaries(point& start) {
 	//TODO: shrink function size
 	boundary processedBoundary;
 	LOBFLine lobf;
-	static std::vector<LOBFPoint> points;
+	std::vector<LOBFPoint> points;
 	points.clear();
 
 	// scan for other boundaries nearby

@@ -107,7 +107,6 @@ private:
 	*/
 	int countBoundaries(point& start);
 
-	void makeBoundaryMap();
 	//TODO: change gray to not be a temporary color anymore, and update docs
     /**
      * @brief Generates the boundary map for the current map.

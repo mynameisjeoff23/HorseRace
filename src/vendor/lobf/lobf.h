@@ -30,12 +30,7 @@ struct LOBFLine
     LOBFLine() : slope(0), y_intercept(0) {}
     LOBFLine(const TNumber& s, const TNumber& yInt) : slope(s), y_intercept(yInt) {}
 
-    std::string toString() const
-    {
-        std::stringstream ss;
-        ss << "y = (" << slope << " * x) + (" << y_intercept << ")";
-        return ss.str();
-    }
+    std::string toString() const;
 
     TNumber slope;
     TNumber y_intercept;
@@ -47,56 +42,11 @@ struct LOBFPoint
     LOBFPoint() : x(0), y(0) {}
     LOBFPoint(const TNumber& x0, const TNumber& y0) : x(x0), y(y0) {}
 
-    std::string toString() const
-    {
-        std::stringstream ss;
-        ss << "(" << x << ", " << y << ")";
-        return ss.str();
-    }
+    std::string toString() const;
 
     TNumber x;
     TNumber y;
 };
 
 // Calculate a line of best fit, using the least square method
-LOBFLine CalculateLineOfBestFit(const std::vector<LOBFPoint>& points)
-{
-    if (points.empty())
-    {
-        return LOBFLine();
-    }
-
-    TNumber totalX = 0;
-    TNumber totalY = 0;
-
-    for (std::vector<LOBFPoint>::const_iterator i = points.begin(); i != points.end(); ++i)
-    {
-        totalX += i->x;
-        totalY += i->y;
-    }
-
-    TNumber meanX = totalX / static_cast<TNumber>(points.size());
-    TNumber meanY = totalY / static_cast<TNumber>(points.size());
-
-    TNumber sumDeviationProducts = 0;
-    TNumber sumXDeviationSquared = 0;
-
-    for (std::vector<LOBFPoint>::const_iterator i = points.begin(); i != points.end(); ++i)
-    {
-        TNumber xDeviation = (i->x - meanX);
-        TNumber yDeviation = (i->y - meanY);
-
-        sumDeviationProducts += (xDeviation * yDeviation);
-        sumXDeviationSquared += (xDeviation * xDeviation);
-    }
-
-    if (sumXDeviationSquared == 0)
-    {
-        return LOBFLine();
-    }
-
-    TNumber slope = sumDeviationProducts / sumXDeviationSquared;
-    TNumber yInt = meanY - (slope * meanX);
-
-    return LOBFLine(slope, yInt);
-}
+LOBFLine CalculateLineOfBestFit(const std::vector<LOBFPoint>& points);
