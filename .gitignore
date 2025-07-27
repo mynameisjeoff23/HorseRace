@@ -10,6 +10,13 @@
 *.userosscache
 *.sln.docstates
 
+#Dependencies
+*.bin
+*.dll
+*.exe
+Dependencies/GLEW/doc/
+Dependencies/GLFW/lib-vc2022/
+
 #User created files
 res/
 ImageProcessingOutput/
