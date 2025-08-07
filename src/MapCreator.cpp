@@ -40,7 +40,6 @@ HorseMap::HorseMap(std::string& filepath) {
 	// outputMap(m_basicMap, m_width, m_height); // output map to file
 	findLargestArea(); // find largest area in the map
 	std::cout << "Number of areas found: " << m_areas.size() << std::endl;
-	std::cin.get(); // wait for user input to continue
 	
 	// indentify boundaries of largest section
 	selectLargestArea(); // select the largest area in the map

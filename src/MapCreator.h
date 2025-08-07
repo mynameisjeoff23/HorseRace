@@ -39,6 +39,7 @@ class HorseMap {
 public:
 	HorseMap(std::string& filename);
 private:
+	//TODO: remove temporary variables and make them passed as arguments instead
 	int m_width, m_height;
 	unsigned char* m_mapImage;
 	std::vector<std::vector<point>> m_basicMap;

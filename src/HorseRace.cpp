@@ -20,9 +20,13 @@
 #include <GL/glew.h> 
 #include <GLFW/glfw3.h>
 
+#include <string>
 
 #include "MapCreator.h"
-#include <string>
+
+#include "OpenGL/Renderer.h"
+#include "OpenGL/VertexBuffer.h"
+#include "OpenGL/VertexBufferLayout.h"
 
 int main() {
 	//set up window and buttons
@@ -61,11 +65,66 @@ int main() {
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
 	{
+
+		float positions[] = {	100.0f, 100.0f,	//0
+								860.0f, 100.0f, //1
+								100.0f, 440.0f, //2
+								860.0f, 440.0f, //3							
+		};
+
+		unsigned int indices[] = {
+			0, 1, 2,	//first triangle
+			1, 3, 2		//second triangle
+		};
+
+		//Create Vertex Array Object
+		unsigned int vao;
+		GLCall(glGenVertexArrays(1, &vao));
+		GLCall(glBindVertexArray(vao));
+
+		constexpr int POINTS = 4;
+		constexpr int FLOATS_PER_POINT = 2;
+
+		VertexArray va;
+		VertexBuffer vb(positions, POINTS * FLOATS_PER_POINT * sizeof(float));
+
+		VertexBufferLayout layout;
+		layout.Push<float>(2); //2 floats per point (x, y)
+		va.AddBuffer(vb, layout);
+		va.Bind();
+
+		//Create Index Buffer Object
+		IndexBuffer ib(indices, sizeof(indices) / sizeof(unsigned int));
+
+		//Create Projection
+		glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
+		//these two cancel each other out
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+		glm::vec3 translation(100, 0, 0);
+
+		Shader shader("res/shaders/white.shader");
+		shader.Bind();
+
+		va.Unbind();
+		shader.Unbind();
+		vb.Unbind();
+		ib.Unbind();
+
+		Renderer renderer;
+
 		//Loop until the user closes the window
 		while (!glfwWindowShouldClose(window)) {
 
 			/* Render here */
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+			glm::mat4 mvp = proj * view * model;
+
+			shader.Bind();
+			shader.SetUniformMat4f("u_MVP", mvp);
+
+			renderer.Draw(va, ib, shader);
 
 			/* Swap front and back buffers */
 			glfwSwapBuffers(window);
