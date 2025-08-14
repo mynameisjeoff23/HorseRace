@@ -27,6 +27,7 @@
 #include "OpenGL/Renderer.h"
 #include "OpenGL/VertexBuffer.h"
 #include "OpenGL/VertexBufferLayout.h"
+#include "OpenGL/Texture.h"
 
 int main() {
 	//set up window and buttons
@@ -66,10 +67,10 @@ int main() {
 
 	{
 
-		float positions[] = {	100.0f, 100.0f,	//0
-								860.0f, 100.0f, //1
-								100.0f, 440.0f, //2
-								860.0f, 440.0f, //3							
+		float positions[] = {	100.0f, 100.0f,	0.0f, 0.0f,	//0
+								860.0f, 100.0f, 1.0f, 0.0f,	//1
+								100.0f, 440.0f, 0.0f, 1.0f, //2
+								860.0f, 440.0f, 1.0f, 1.0f	//3							
 		};
 
 		unsigned int indices[] = {
@@ -83,13 +84,14 @@ int main() {
 		GLCall(glBindVertexArray(vao));
 
 		constexpr int POINTS = 4;
-		constexpr int FLOATS_PER_POINT = 2;
+		constexpr int FLOATS_PER_POINT = 4;
 
 		VertexArray va;
 		VertexBuffer vb(positions, POINTS * FLOATS_PER_POINT * sizeof(float));
 
 		VertexBufferLayout layout;
-		layout.Push<float>(2); //2 floats per point (x, y)
+		layout.Push<float>(2);
+		layout.Push<float>(2); //4 floats per point (x, y, u, v)
 		va.AddBuffer(vb, layout);
 		va.Bind();
 
@@ -98,12 +100,16 @@ int main() {
 
 		//Create Projection
 		glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
-		//these two cancel each other out
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
-		glm::vec3 translation(100, 0, 0);
+		//these two can cancel each other out
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+		glm::vec3 translation(0, 0, 0);
 
-		Shader shader("res/shaders/white.shader");
+		Shader shader("res/shaders/basic.shader");
 		shader.Bind();
+
+		Texture texture("res/maps/testimage.png");
+		texture.Bind();
+		shader.SetUniform1i("u_Texture", 0);
 
 		va.Unbind();
 		shader.Unbind();
@@ -125,7 +131,7 @@ int main() {
 			shader.SetUniformMat4f("u_MVP", mvp);
 
 			renderer.Draw(va, ib, shader);
-
+			
 			/* Swap front and back buffers */
 			glfwSwapBuffers(window);
 
@@ -134,5 +140,8 @@ int main() {
 		}
 	}
 
+	//Clean up
+	glfwDestroyWindow(window);
+	glfwTerminate();
 	return 0;
 }

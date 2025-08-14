@@ -138,6 +138,7 @@
     <ClCompile Include="src\OpenGL\IndexBuffer.cpp" />
     <ClCompile Include="src\OpenGL\Renderer.cpp" />
     <ClCompile Include="src\OpenGL\shader.cpp" />
+    <ClCompile Include="src\OpenGL\Texture.cpp" />
     <ClCompile Include="src\OpenGL\VertexArray.cpp" />
     <ClCompile Include="src\OpenGL\VertexBuffer.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="src\OpenGL\IndexBuffer.h" />
     <ClInclude Include="src\OpenGL\Renderer.h" />
     <ClInclude Include="src\OpenGL\shader.h" />
+    <ClInclude Include="src\OpenGL\Texture.h" />
     <ClInclude Include="src\OpenGL\VertexArray.h" />
     <ClInclude Include="src\OpenGL\VertexBuffer.h" />
     <ClInclude Include="src\OpenGL\VertexBufferLayout.h" />
