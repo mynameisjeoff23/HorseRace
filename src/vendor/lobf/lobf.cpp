@@ -16,6 +16,9 @@ std::string LOBFPoint::toString() const
 
 LOBFLine CalculateLineOfBestFit(const std::vector<LOBFPoint>& points)
 {
+    bool sameX = true;
+	TNumber firstX = points.front().x;
+
     if (points.empty())
     {
         return LOBFLine();
@@ -28,7 +31,13 @@ LOBFLine CalculateLineOfBestFit(const std::vector<LOBFPoint>& points)
     {
         totalX += i->x;
         totalY += i->y;
+        if (i->x != firstX) { sameX = false; }
     }
+
+    if (sameX)
+    {
+        return LOBFLine(9999, 0);
+	}
 
     TNumber meanX = totalX / static_cast<TNumber>(points.size());
     TNumber meanY = totalY / static_cast<TNumber>(points.size());

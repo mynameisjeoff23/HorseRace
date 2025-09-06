@@ -12,9 +12,10 @@
 
 enum color {
 	BLACK = 0,
-	WHITE = 1, 
-	GRAY = 2, // temporary
-	RED = 3 // temporary
+	WHITE = 1,
+	GRAY = 2, // represents 
+	RED = 3, // represents boundaries
+	GREEN = 4 // represents direction of normal vectors. For testing purposes only
 };
 
 struct area {
@@ -136,5 +137,9 @@ private:
 	 * @param start The starting point from which to process nearby boundaries.
 	 * @return A boundary object containing the processed boundary information.
 	 */
-	boundary processNearbyBoundaries(point& start);
+	boundary processNearbyBoundaries(point& start, std::ofstream& stream);
+	std::vector<LOBFPoint> addNearbyBoundaries(point& start, std::vector<LOBFPoint>& points);
+	void calculateNormal(TNumber slope, point& start, std::ofstream& stream) const;
+	const char* vectorToString(const std::vector<std::vector<point>>& map) const;
+
 };

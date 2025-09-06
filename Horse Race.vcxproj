@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClCompile Include="src\HorseRace.cpp" />
     <ClCompile Include="src\MapCreator.cpp" />
+    <ClCompile Include="src\MapTester.cpp" />
     <ClCompile Include="src\OpenGL\IndexBuffer.cpp" />
     <ClCompile Include="src\OpenGL\Renderer.cpp" />
     <ClCompile Include="src\OpenGL\shader.cpp" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\MapCreator.h" />
+    <ClInclude Include="src\MapTester.h" />
     <ClInclude Include="src\OpenGL\IndexBuffer.h" />
     <ClInclude Include="src\OpenGL\Renderer.h" />
     <ClInclude Include="src\OpenGL\shader.h" />

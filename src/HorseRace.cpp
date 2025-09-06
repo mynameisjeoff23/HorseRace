@@ -37,6 +37,8 @@ int main() {
 	HorseMap map = HorseMap(filepath);
 	//run simulation
 
+	float WORLD_WIDTH{ 1920.0f }, WORLD_HEIGHT{ 1080.0f };
+
 	GLFWwindow* window;
 
 	//Initialize the library
@@ -117,7 +119,7 @@ int main() {
 		Shader shader("res/shaders/basic.shader");
 		shader.Bind();
 
-		Texture texture("res/maps/testimage.png");
+		Texture texture(filepath.c_str());
 		texture.Bind();
 		shader.SetUniform1i("u_Texture", 0);
 
